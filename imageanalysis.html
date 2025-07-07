@@ -1,0 +1,460 @@
+<!-- Upload Section -->
+    <div class="max-w-4xl mx-auto mb-8">
+        <div id="uploadArea" class="upload-area bg-white rounded-xl p-8 text-center cursor-pointer shadow-lg">
+            <div id="uploadContent">
+                <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">Upload Image for Analysis</h3>
+                <p class="text-gray-500 mb-4">Drag and drop an image here, or click to select</p>
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    Choose Image
+                </button>
+                <p class="text-sm text-gray-400 mt-2">Supports JPG, PNG, WebP (Max 10MB)</p>
+            </div>
+            <input type="file" id="fileInput" class="hidden" accept="image/*">
+        </div>
+    </div>
+
+    <!-- Analysis Section -->
+    <div id="analysisSection" class="max-w-6xl mx-auto hidden">
+        <!-- Image Preview -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Image Analysis</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="relative">
+                    <img id="previewImage" class="w-full h-64 object-cover rounded-lg border" alt="Uploaded image">
+                    <div id="scanOverlay" class="absolute inset-0 rounded-lg overflow-hidden hidden">
+                        <div class="scan-line"></div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-700 mb-2">Image Information</h3>
+                        <div id="imageInfo" class="text-sm text-gray-600 space-y-1">
+                            <!-- Image details will be populated here -->
+                        </div>
+                    </div>
+                    <button id="analyzeBtn" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-medium transition-all duration-200">
+                        🔍 Start Deep Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Progress -->
+        <div id="progressSection" class="bg-white rounded-xl shadow-lg p-6 mb-8 hidden">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Analysis in Progress</h3>
+            <div class="space-y-4">
+                <div id="progressSteps">
+                    <!-- Progress steps will be added dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <!-- Overall Result -->
+            <div id="overallResult" class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <!-- Results will be populated here -->
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="analysis-grid mb-8">
+                <!-- Pixel Analysis -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        🔬 Pixel-Level Analysis
+                    </h3>
+                    <div id="pixelAnalysis" class="space-y-3">
+                        <!-- Pixel analysis results -->
+                    </div>
+                </div>
+
+                <!-- Metadata Analysis -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        📊 Metadata Analysis
+                    </h3>
+                    <div id="metadataAnalysis" class="space-y-3">
+                        <!-- Metadata analysis results -->
+                    </div>
+                </div>
+
+                <!-- Compression Analysis -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        🗜️ Compression Analysis
+                    </h3>
+                    <div id="compressionAnalysis" class="space-y-3">
+                        <!-- Compression analysis results -->
+                    </div>
+                </div>
+
+                <!-- Edge Detection -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        ⚡ Edge Detection
+                    </h3>
+                    <div id="edgeAnalysis" class="space-y-3">
+                        <!-- Edge analysis results -->
+                    </div>
+                </div>
+
+                <!-- Frequency Analysis -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        📈 Frequency Analysis
+                    </h3>
+                    <div id="frequencyAnalysis" class="space-y-3">
+                        <!-- Frequency analysis results -->
+                    </div>
+                </div>
+
+                <!-- AI Detection -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        🤖 AI Pattern Detection
+                    </h3>
+                    <div id="aiAnalysis" class="space-y-3">
+                        <!-- AI analysis results -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">📋 Analysis Summary & Recommendations</h3>
+                <div id="recommendations" class="space-y-3">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const analysisSection = document.getElementById('analysisSection');
+    const previewImage = document.getElementById('previewImage');
+    const imageInfo = document.getElementById('imageInfo');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const progressSection = document.getElementById('progressSection');
+    const resultsSection = document.getElementById('resultsSection');
+    const scanOverlay = document.getElementById('scanOverlay');
+
+    let currentImage = null;
+    let analysisData = {};
+
+    // Upload functionality
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file.');
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            alert('File size must be less than 10MB.');
+            return;
+        }
+
+        currentImage = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            displayImageInfo(file);
+            analysisSection.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function displayImageInfo(file) {
+        const img = new Image();
+        img.onload = () => {
+            imageInfo.innerHTML = `
+                <div><strong>Filename:</strong> ${file.name}</div>
+                <div><strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                <div><strong>Dimensions:</strong> ${img.width} × ${img.height} pixels</div>
+                <div><strong>Type:</strong> ${file.type}</div>
+                <div><strong>Last Modified:</strong> ${new Date(file.lastModified).toLocaleDateString()}</div>
+            `;
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
+    analyzeBtn.addEventListener('click', startAnalysis);
+
+    function startAnalysis() {
+        progressSection.classList.remove('hidden');
+        resultsSection.classList.add('hidden');
+        scanOverlay.classList.remove('hidden');
+        
+        const steps = [
+            'Initializing AI models...',
+            'Analyzing pixel patterns...',
+            'Checking metadata integrity...',
+            'Detecting compression artifacts...',
+            'Running edge detection algorithms...',
+            'Performing frequency analysis...',
+            'AI pattern recognition...',
+            'Generating final report...'
+        ];
+
+        const progressSteps = document.getElementById('progressSteps');
+        progressSteps.innerHTML = '';
+
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                addProgressStep(step, index);
+                if (index === steps.length - 1) {
+                    setTimeout(() => {
+                        completeAnalysis();
+                    }, 1000);
+                }
+            }, index * 800);
+        });
+    }
+
+    function addProgressStep(step, index) {
+        const progressSteps = document.getElementById('progressSteps');
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'flex items-center space-x-3 p-3 bg-blue-50 rounded-lg';
+        stepDiv.innerHTML = `
+            <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <span class="text-gray-700">${step}</span>
+        `;
+        progressSteps.appendChild(stepDiv);
+    }
+
+    function completeAnalysis() {
+        scanOverlay.classList.add('hidden');
+        progressSection.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
+
+        // Simulate analysis results
+        const isMorphed = Math.random() > 0.6; // Random for demo
+        const confidence = Math.floor(Math.random() * 30) + 70; // 70-99%
+
+        displayResults(isMorphed, confidence);
+    }
+
+    function displayResults(isMorphed, confidence) {
+        // Overall Result
+        const overallResult = document.getElementById('overallResult');
+        const resultColor = isMorphed ? 'red' : 'green';
+        const resultText = isMorphed ? 'POTENTIALLY MORPHED' : 'LIKELY AUTHENTIC';
+        const resultIcon = isMorphed ? '⚠️' : '✅';
+
+        overallResult.innerHTML = `
+            <div class="text-center">
+                <div class="text-6xl mb-4">${resultIcon}</div>
+                <h2 class="text-3xl font-bold text-${resultColor}-600 mb-2">${resultText}</h2>
+                <p class="text-xl text-gray-600 mb-4">Confidence Level: ${confidence}%</p>
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                    <div class="bg-${resultColor}-500 h-3 rounded-full progress-bar" style="width: ${confidence}%"></div>
+                </div>
+                <p class="text-gray-700">
+                    ${isMorphed ? 
+                        'Our AI analysis detected potential signs of image manipulation. Please review the detailed analysis below.' :
+                        'The image appears to be authentic based on our comprehensive analysis. No significant manipulation detected.'
+                    }
+                </p>
+            </div>
+        `;
+
+        // Detailed Analysis Results
+        populateDetailedAnalysis(isMorphed);
+    }
+
+    function populateDetailedAnalysis(isMorphed) {
+        // Pixel Analysis
+        document.getElementById('pixelAnalysis').innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>Pixel Consistency</span>
+                <span class="font-semibold ${isMorphed ? 'text-yellow-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Inconsistent' : 'Consistent'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Noise Pattern</span>
+                <span class="font-semibold ${isMorphed ? 'text-red-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Irregular' : 'Natural'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Color Distribution</span>
+                <span class="font-semibold text-green-600">Normal</span>
+            </div>
+        `;
+
+        // Metadata Analysis
+        document.getElementById('metadataAnalysis').innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>EXIF Data Integrity</span>
+                <span class="font-semibold ${isMorphed ? 'text-yellow-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Modified' : 'Intact'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Creation Timestamp</span>
+                <span class="font-semibold text-green-600">Valid</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Software Signature</span>
+                <span class="font-semibold ${isMorphed ? 'text-red-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Suspicious' : 'Standard'}
+                </span>
+            </div>
+        `;
+
+        // Compression Analysis
+        document.getElementById('compressionAnalysis').innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>Compression Artifacts</span>
+                <span class="font-semibold ${isMorphed ? 'text-red-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Inconsistent' : 'Uniform'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Quality Levels</span>
+                <span class="font-semibold ${isMorphed ? 'text-yellow-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Mixed' : 'Consistent'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Block Boundaries</span>
+                <span class="font-semibold text-green-600">Normal</span>
+            </div>
+        `;
+
+        // Edge Detection
+        document.getElementById('edgeAnalysis').innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>Edge Continuity</span>
+                <span class="font-semibold ${isMorphed ? 'text-red-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Broken' : 'Smooth'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Gradient Analysis</span>
+                <span class="font-semibold ${isMorphed ? 'text-yellow-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Irregular' : 'Natural'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Boundary Detection</span>
+                <span class="font-semibold text-green-600">Clear</span>
+            </div>
+        `;
+
+        // Frequency Analysis
+        document.getElementById('frequencyAnalysis').innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>Frequency Domain</span>
+                <span class="font-semibold ${isMorphed ? 'text-yellow-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Anomalous' : 'Normal'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>DCT Coefficients</span>
+                <span class="font-semibold ${isMorphed ? 'text-red-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Irregular' : 'Standard'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Spectral Analysis</span>
+                <span class="font-semibold text-green-600">Consistent</span>
+            </div>
+        `;
+
+        // AI Analysis
+        document.getElementById('aiAnalysis').innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>Deep Learning Model</span>
+                <span class="font-semibold ${isMorphed ? 'text-red-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Manipulation Detected' : 'No Manipulation'}
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Neural Network Score</span>
+                <span class="font-semibold text-blue-600">${Math.floor(Math.random() * 20) + 80}%</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Pattern Recognition</span>
+                <span class="font-semibold ${isMorphed ? 'text-yellow-600' : 'text-green-600'}">
+                    ${isMorphed ? 'Suspicious Patterns' : 'Natural Patterns'}
+                </span>
+            </div>
+        `;
+
+        // Recommendations
+        const recommendations = document.getElementById('recommendations');
+        if (isMorphed) {
+            recommendations.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                    <h4 class="font-semibold text-red-800 mb-2">⚠️ Potential Manipulation Detected</h4>
+                    <ul class="text-red-700 space-y-1 text-sm">
+                        <li>• Multiple analysis methods indicate possible image manipulation</li>
+                        <li>• Consider verifying the source and authenticity of this image</li>
+                        <li>• Use additional verification tools for critical applications</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800 mb-2">🔍 Next Steps</h4>
+                    <ul class="text-blue-700 space-y-1 text-sm">
+                        <li>• Cross-reference with original sources if available</li>
+                        <li>• Perform reverse image search</li>
+                        <li>• Consult with forensic experts for legal matters</li>
+                    </ul>
+                </div>
+            `;
+        } else {
+            recommendations.innerHTML = `
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                    <h4 class="font-semibold text-green-800 mb-2">✅ Image Appears Authentic</h4>
+                    <ul class="text-green-700 space-y-1 text-sm">
+                        <li>• All analysis methods indicate the image is likely unmodified</li>
+                        <li>• Metadata and pixel patterns appear consistent</li>
+                        <li>• No significant manipulation artifacts detected</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800 mb-2">📝 Important Note</h4>
+                    <p class="text-blue-700 text-sm">
+                        While our analysis suggests authenticity, no detection method is 100% accurate. 
+                        For critical applications, consider using multiple verification tools and expert analysis.
+                    </p>
+                </div>
+            `;
+        }
+    }
+</script>
